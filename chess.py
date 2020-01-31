@@ -115,7 +115,7 @@ def board_eval_recursive(board, depth, turn):
 
 def tile_eval(board, x, y, tile):
     value = values[tile.type] * (1 - 2 * tile.color)
-    value += (0.08 - 0.02 * (tile.type == "Q")) * tile_get_moves(board, x, y, count = True) * (1 - 2 * tile.color)
+    value += (0.08 - 0.02 * (tile.type == "Q") - 0.1 * (tile.type == "K")) * tile_get_moves(board, x, y, count = True) * (1 - 2 * tile.color)
     if tile.type == "P":
         value += (0.4 - 0.08 * math.sqrt((x - 3.5)**2 + (y - 3.5)**2)) * (1 - 2 * tile.color)
 
@@ -141,13 +141,13 @@ def tile_get_moves(board, x, y, count = False):
                 if count: moves += 1
                 else: moves.append((x, y1))
 
-            if tile.color == 0 and y == 1 and board[x][3] == -1:
-                if count: moves += 1
-                else: moves.append((x, 3))
+                if tile.color == 0 and y == 1 and board[x][3] == -1:
+                    if count: moves += 1
+                    else: moves.append((x, 3))
 
-            if tile.color == 1 and y == 6 and board[x][4] == -1:
-                if count: moves += 1
-                else: moves.append((x, 4))
+                if tile.color == 1 and y == 6 and board[x][4] == -1:
+                    if count: moves += 1
+                    else: moves.append((x, 4))
 
             if 0 < x:
                 tile_l = board[x - 1][y1]
@@ -212,7 +212,7 @@ turn = 1
 while True:
     while True:
         try:
-            i = input(str((turn - 1) % 2) + " to play:").split()
+            i = input("\n" + str((turn - 1) % 2) + " to play:").split()
             if len(i) == 0:
                 break
             if i[0] == "-":
@@ -228,6 +228,7 @@ while True:
         eval = board_eval_recursive(board, 3, turn)
         if eval != None:
             tile_move(board, eval[0], eval[1])
+            print("Computer played: " + letters[eval[0][0]] + numbers[eval[0][1]], letters[eval[1][0]] + numbers[eval[1][1]])
             turn += 1
         else:
             print("No legal moves.")
@@ -237,5 +238,5 @@ while True:
             print("Not a legal move.")
         tile_move(board, a, b)
         turn += 1
+    print("Current evaluation: " + str(board_eval(board)) + "\n")
     board_print(board)
-    print(board_eval(board))
