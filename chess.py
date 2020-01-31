@@ -115,7 +115,7 @@ def board_eval_recursive(board, depth, turn):
 
 def tile_eval(board, x, y, tile):
     value = values[tile.type] * (1 - 2 * tile.color)
-    value += (0.08 - 0.02 * (tile.type == "Q")) * tile_get_move_count(board, x, y) * (1 - 2 * tile.color)
+    value += (0.08 - 0.02 * (tile.type == "Q")) * tile_get_moves(board, x, y, count = True) * (1 - 2 * tile.color)
     if tile.type == "P":
         value += (0.4 - 0.08 * math.sqrt((x - 3.5)**2 + (y - 3.5)**2)) * (1 - 2 * tile.color)
 
@@ -125,9 +125,10 @@ def tile_move(board, a, b):
     board[b[0]][b[1]] = board[a[0]][a[1]]
     board[a[0]][a[1]] = -1
 
-def tile_get_moves(board, x, y):
+def tile_get_moves(board, x, y, count = False):
     tile = board[x][y]
-    moves = []
+    if count: moves = 0
+    else: moves = []
 
     if tile != -1:
         if tile.type == "P":
@@ -137,72 +138,44 @@ def tile_get_moves(board, x, y):
                 return moves
 
             if board[x][y1] == -1:
-                moves.append((x, y1))
+                if count: moves += 1
+                else: moves.append((x, y1))
 
             if tile.color == 0 and y == 1 and board[x][3] == -1:
-                moves.append((x, 3))
+                if count: moves += 1
+                else: moves.append((x, 3))
 
             if tile.color == 1 and y == 6 and board[x][4] == -1:
-                moves.append((x, 4))
+                if count: moves += 1
+                else: moves.append((x, 4))
 
             if 0 < x:
                 tile_l = board[x - 1][y1]
                 if tile_l != -1 and tile_l.color != tile.color:
-                    moves.append((x - 1, y1))
-
+                    if count: moves += 1
+                    else: moves.append((x - 1, y1))
             if x < 7:
                 tile_r = board[x + 1][y1]
                 if tile_r != -1 and tile_r.color != tile.color:
-                    moves.append((x + 1, y1))
+                    if count: moves += 1
+                    else: moves.append((x + 1, y1))
 
         elif tile.type == "N":
-            moves = notpawn_get_moves(board, x, y, tile.color, [-1, 1, 2, 2, 1, -1, -2, -2], [-2, -2, -1, 1, 2, 2, 1, -1], 8, 1)
+            moves = notpawn_get_moves(board, x, y, tile.color, [-1, 1, 2, 2, 1, -1, -2, -2], [-2, -2, -1, 1, 2, 2, 1, -1], 8, 1, count = count)
         elif tile.type == "B":
-            moves = notpawn_get_moves(board, x, y, tile.color, [-1, -1, 1, 1], [-1, 1, -1, 1], 4, 7)
+            moves = notpawn_get_moves(board, x, y, tile.color, [-1, -1, 1, 1], [-1, 1, -1, 1], 4, 7, count = count)
         elif tile.type == "R":
-            moves = notpawn_get_moves(board, x, y, tile.color, [-1, 1, 0, 0], [0, 0, -1, 1], 4, 7)
+            moves = notpawn_get_moves(board, x, y, tile.color, [-1, 1, 0, 0], [0, 0, -1, 1], 4, 7, count = count)
         elif tile.type == "Q":
-            moves = notpawn_get_moves(board, x, y, tile.color, [-1, -1, 1, 1, -1, 1, 0, 0], [-1, 1, -1, 1, 0, 0, -1, 1], 8, 7)
+            moves = notpawn_get_moves(board, x, y, tile.color, [-1, -1, 1, 1, -1, 1, 0, 0], [-1, 1, -1, 1, 0, 0, -1, 1], 8, 7, count = count)
         elif tile.type == "K":
-            moves = notpawn_get_moves(board, x, y, tile.color, [-1, -1, 1, 1, -1, 1, 0, 0], [-1, 1, -1, 1, 0, 0, -1, 1], 8, 1)
+            moves = notpawn_get_moves(board, x, y, tile.color, [-1, -1, 1, 1, -1, 1, 0, 0], [-1, 1, -1, 1, 0, 0, -1, 1], 8, 1, count = count)
 
     return moves
 
-def tile_get_move_count(board, x, y):
-    tile = board[x][y]
-    moves = 0
-
-    if tile != -1:
-        if tile.type == "P":
-            y1 = y + 1 - 2 * tile.color
-
-            if y1 < 0 or 8 <= y1:
-                return moves
-
-            if 0 < x:
-                tile_l = board[x - 1][y1]
-                if tile_l != -1 and tile_l.color != tile.color:
-                    moves += 1
-
-            if x > 7:
-                tile_r = board[x + 1][y1]
-                if tile_r != -1 and tile_r.color != tile.color:
-                    moves += 1
-        elif tile.type == "N":
-            moves = notpawn_get_move_count(board, x, y, tile.color, [-1, 1, 2, 2, 1, -1, -2, -2], [-2, -2, -1, 1, 2, 2, 1, -1], 8, 1)
-        elif tile.type == "B":
-            moves = notpawn_get_move_count(board, x, y, tile.color, [-1, -1, 1, 1], [-1, 1, -1, 1], 4, 7)
-        elif tile.type == "R":
-            moves = notpawn_get_move_count(board, x, y, tile.color, [-1, 1, 0, 0], [0, 0, -1, 1], 4, 7)
-        elif tile.type == "Q":
-            moves = notpawn_get_move_count(board, x, y, tile.color, [-1, -1, 1, 1, -1, 1, 0, 0], [-1, 1, -1, 1, 0, 0, -1, 1], 8, 7)
-        elif tile.type == "K":
-            moves = notpawn_get_move_count(board, x, y, tile.color, [-1, -1, 1, 1, -1, 1, 0, 0], [-1, 1, -1, 1, 0, 0, -1, 1], 8, 1)
-
-    return moves
-
-def notpawn_get_moves(board, x, y, color, dx, dy, dlen, len):
-    moves = []
+def notpawn_get_moves(board, x, y, color, dx, dy, dlen, len, count = False):
+    if count: moves = 0
+    else: moves = []
     for i in range(dlen):
         for j in range(1, len + 1):
             x1 = x + dx[i] * j
@@ -213,23 +186,9 @@ def notpawn_get_moves(board, x, y, color, dx, dy, dlen, len):
 
             tile = board[x1][y1]
 
-            if tile == -1 or tile.color != color: moves.append((x1, y1))
-            if tile != -1: break
-    return moves
-
-def notpawn_get_move_count(board, x, y, color, dx, dy, dlen, len):
-    moves = 0
-    for i in range(dlen):
-        for j in range(1, len + 1):
-            x1 = x + dx[i] * j
-            y1 = y + dy[i] * j
-
-            if x1 < 0 or 8 <= x1: break
-            if y1 < 0 or 8 <= y1: break
-
-            tile = board[x1][y1]
-
-            if tile == -1 or tile.color != color: moves += 1
+            if tile == -1 or tile.color != color:
+                if count: moves += 1
+                else: moves.append((x1, y1))
             if tile != -1: break
     return moves
 
