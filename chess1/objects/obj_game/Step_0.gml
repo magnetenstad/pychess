@@ -1,7 +1,7 @@
 
 if keyboard_check_pressed(vk_space) or play_move
 {
-	var _eval = board_eval_next(obj_game.board, 3, turn)
+	var _eval = board_eval_next(obj_game.board, 2, turn)
 	var _move = _eval[0]
 	
 	show_debug_message("TURN: " + string(turn) + ", EVAL:" + string(_eval[1]))

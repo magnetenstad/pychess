@@ -21,7 +21,7 @@ for (var i = 0; i < _dlen; ++i)
 		
 		var _tile = _board[# _x1, _y1]
 
-		if _tile == -1 or _tile[tile.color] == !_color { _moves++ }
+		if _tile == -1 or _tile[tile.color] != _color { _moves++ }
 		
 		if _tile != -1 { break }
 	}

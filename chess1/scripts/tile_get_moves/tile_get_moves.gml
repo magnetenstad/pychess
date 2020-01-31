@@ -35,12 +35,15 @@ if _tile != -1 and _tile != undefined
 				}
 			}
 			
-			if tile_get_color(_board, _x + 1, _y1) == !_color
+			var col_p = tile_get_color(_board, _x + 1, _y1)
+			var col_n = tile_get_color(_board, _x - 1, _y1)
+			
+			if col_p != -1 and col_p != undefined and col_p != _color
 			{
 				ds_list_add(_moves, [_x + 1, _y1])
 			}
 			
-			if tile_get_color(_board, _x - 1, _y1) == !_color
+			if col_n != -1 and col_n != undefined and col_n != _color
 			{
 				ds_list_add(_moves, [_x - 1, _y1])
 			}

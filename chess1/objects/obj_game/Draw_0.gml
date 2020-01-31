@@ -69,7 +69,6 @@ if tile_select != -1
 	for (var i = 0; i < _size; ++i)
 	{
 		var _move = _moves[| i]
-	
 		draw_circle((_move[0] + 0.5) * tile_size, (_move[1] + 0.5) * tile_size, 4, false)
 	}
 	

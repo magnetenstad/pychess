@@ -1,0 +1,7 @@
+
+Fix:
+    Doesn't care about checks
+    Can't see forks (needs depth = 4)
+    Can't castle
+    Can't promote pawns
+    Can't en passant pawns

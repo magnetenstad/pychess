@@ -3,7 +3,7 @@ randomize()
 
 value = ds_list_create()
 
-value[| piece.pawn] = 1000
+value[| piece.pawn] = 1
 value[| piece.knight] = 3
 value[| piece.bishop] = 3
 value[| piece.rook] = 5
