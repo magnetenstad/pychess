@@ -1,3 +1,4 @@
+import math
 
 class Piece:
     def __init__(self, color, type):
@@ -5,7 +6,8 @@ class Piece:
         self.type = type
         self.value = 0
 
-def reset(board):
+def board_create():
+    board = [[-1 for i in range(8)] for i in range(8)]
     color = 0
 
     for i in range(2):
@@ -22,9 +24,10 @@ def reset(board):
             board[j][1 + i*5] = Piece(color, "P")
 
         color = 1
-    board_eval()
+    board_eval(board)
+    return board
 
-def board_eval():
+def board_eval(board):
     value = 0
     for x in range(len(board)):
         for y in range(len(board[x])):
@@ -239,9 +242,7 @@ values = {
     "K": 999
 }
 
-board = [[-1 for i in range(8)] for i in range(8)]
-
-reset(board)
+board = board_create()
 
 board_print(board)
 
@@ -278,4 +279,4 @@ while True:
         tile_move(board, a, b)
         turn += 1
     board_print(board)
-    print(board_eval())
+    print(board_eval(board))
