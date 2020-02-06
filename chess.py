@@ -114,8 +114,10 @@ def board_eval_recursive(board, depth, turn):
     return value
 
 def tile_eval(board, x, y, tile):
-    value = values[tile.type]
-    value += (0.08 - 0.02 * (tile.type == "Q") - 0.08 * (tile.type == "K")) * tile_get_moves(board, x, y, count = True)
+    value = values[tile.type] * (1 - 2 * tile.color)
+    value += (0.08 - 0.02 * (tile.type == "Q") - 0.1 * (tile.type == "K")) * tile_get_moves(board, x, y, count = True) * (1 - 2 * tile.color)
+    if tile.type == "P":
+        value += (0.4 - 0.08 * math.sqrt((x - 3.5)**2 + (y - 3.5)**2)) * (1 - 2 * tile.color)
 
     if tile.type == "P" or tile.type == "N":
         value -= 0.08 * (math.sqrt((x - 3.5)**2 + (y - 3.5)**2) - 2)
