@@ -1,4 +1,6 @@
 import math
+import time
+import copy
 
 class Piece:
     def __init__(self, color, type):
@@ -57,12 +59,12 @@ def board_eval_move(board, a, b):
 
     for t in (a, b):
         for i in range(8):
-            for j in range(1, 8):
+            for j in range(0, 8):
                 x = t[0] + dx[i] * j
                 y = t[1] + dy[i] * j
 
-                if x < 0 or 8 <= x: break
-                if y < 0 or 8 <= y: break
+                if x < 0 or 7 < x: break
+                if y < 0 or 7 < y: break
 
                 tile = board[x][y]
 
@@ -95,33 +97,34 @@ def board_eval_recursive(board, depth, turn):
                 moves = tile_get_moves(board, x, y)
 
                 for move in moves:
-                    board_new = [list(x) for x in board]
+                    board_new = copy.deepcopy(board)#[list(x) for x in board]
 
                     tile_move(board_new, (x, y), move)
 
                     if depth > 0:
                         eval = board_eval_recursive(board_new, depth, turn)
                         if eval == None:
-                            eval = ((x, y), move, board_eval_move(board_new, (x, y), move))
+                            eval = ((x, y), move, board_eval_move(board, (x, y), move))
                     else:
-                        eval = ((x, y), move, board_eval_move(board_new, (x, y), move))
+                        eval = ((x, y), move, board_eval_move(board, (x, y), move))#board_eval(board_new))
 
                     if eval == None:
                         continue
 
                     if value == None or (turn % 2 == 0 and eval[2] > value[2]) or (turn % 2 == 1 and eval[2] < value[2]):
                         value = ((x, y), move, eval[2])
+
     return value
 
 def tile_eval(board, x, y, tile):
     value = values[tile.type]
-    value += (0.08 - 0.02 * (tile.type == "Q") - 0.08 * (tile.type == "K")) * tile_get_moves(board, x, y, count = True)
+    value += (0.08 - 0.04 * (tile.type == "Q") - 0.08 * (tile.type == "K")) * tile_get_moves(board, x, y, count = True)
 
     if tile.type == "P" or tile.type == "N":
         value -= 0.08 * (math.sqrt((x - 3.5)**2 + (y - 3.5)**2) - 2)
 
     if tile.type == "R":
-        value -= 0.5 * (y != 0 and y != 7)
+        value -= 0.1 * (y != 0 and y != 7)
 
     return value * (1 - 2 * tile.color)
 
@@ -221,6 +224,8 @@ while True:
                 break
             if i[0] == "-":
                 turn -= 1
+            if i[0] == "exit":
+                break
             a = (letters.index(i[0][0]), numbers.index(i[0][1]))
             if len(i) == 1:
                 print(board[a[0]][a[1]].value)
@@ -228,19 +233,24 @@ while True:
             break
         except:
             pass
+    if i[0] == "exit":
+        break
     if len(i) == 0:
+        t = time.time()
         eval = board_eval_recursive(board, 3, turn)
         if eval != None:
             tile_move(board, eval[0], eval[1])
-            print("Computer played: " + letters[eval[0][0]] + numbers[eval[0][1]], letters[eval[1][0]] + numbers[eval[1][1]])
+            print("Computer played:", letters[eval[0][0]] + numbers[eval[0][1]], letters[eval[1][0]] + numbers[eval[1][1]])
+            print("Eval: ", eval[2])
             turn += 1
         else:
             print("No legal moves.")
+        print("Time:", time.time() - t)
     else:
         moves = tile_get_moves(board, a[0], a[1])
         if not b in moves:
             print("Not a legal move.")
         tile_move(board, a, b)
         turn += 1
-    print("Current evaluation: " + str(board_eval(board)) + "\n")
+    print("Current evaluation: ", board_eval(board), "\n")
     board_print(board)
