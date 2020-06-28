@@ -233,8 +233,6 @@ while True:
             break
         except:
             pass
-    if i[0] == "exit":
-        break
     if len(i) == 0:
         t = time.time()
         eval = board_eval_recursive(board, 3, turn)
@@ -247,6 +245,8 @@ while True:
             print("No legal moves.")
         print("Time:", time.time() - t)
     else:
+        if i[0] == "exit":
+            break
         moves = tile_get_moves(board, a[0], a[1])
         if not b in moves:
             print("Not a legal move.")
