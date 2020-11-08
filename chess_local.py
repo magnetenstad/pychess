@@ -2,6 +2,7 @@ from chess import *
 
 board = board_create()
 
+print("\n")
 board_print(board)
 
 while True:
@@ -11,7 +12,7 @@ while True:
 
     while True:
         try:
-            i = input("\n" + str((turn - 1) % 2) + " to play:").split()
+            i = input("\n" + ("white", "black")[(turn - 1) % 2] + " to play:").split()
             if len(i) == 0:
                 break
             if i[0] == "-":
@@ -25,9 +26,10 @@ while True:
             break
         except:
             pass
+
     if len(i) == 0:
         t = time.time()
-        eval = board_eval_recursive(board, 3, turn)
+        eval = board_eval_recursive(board, 1, turn)
         if eval != None:
             tile_move(board, eval[0], eval[1])
             print("Computer played:", letters[eval[0][0]] +

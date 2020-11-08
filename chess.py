@@ -17,6 +17,15 @@ values = {
     "K": 999
 }
 
+icons = {
+    "P": ["♟", "♙"],
+    "N": ["♞", "♘"],
+    "B": ["♝", "♗"],
+    "R": ["♜", "♖"],
+    "Q": ["♛", "♕"],
+    "K": ["♚", "♔"]
+}
+
 letters = ("a", "b", "c", "d", "e", "f", "g", "h")
 numbers = ("1", "2", "3", "4", "5", "6", "7", "8")
 turn = 1
@@ -55,15 +64,15 @@ def board_eval(board):
 def board_print(board):
     y = 7
     while y >= 0:
-        row = str(y + 1) + "| "
+        row = str(y + 1) + " "
         for x in range(len(board)):
             tile = board[x][y]
-            if tile != -1: row += " " + tile.type + str(tile.color) + ""
+            if tile != -1: row += icons[tile.type][tile.color] + " "
             else: row += "   "
         y -= 1
         print(row)
-    print(" |_________________________")
-    print("    A  B  C  D  E  F  G  H ")
+    #print(" |_________________________")
+    print("  A B C D E F G H ")
 
 def board_eval_move(board, a, b):
     value = 0
@@ -115,17 +124,17 @@ def board_eval_recursive(board, depth, turn):
                     tile_move(board_new, (x, y), move)
 
                     if depth > 0:
-                        eval = board_eval_recursive(board_new, depth, turn)
-                        if eval == None:
-                            eval = ((x, y), move, board_eval_move(board, (x, y), move))
+                        _eval = board_eval_recursive(board_new, depth, turn)
+                        if _eval == None:
+                            _eval = ((x, y), move, board_eval_move(board, (x, y), move))
                     else:
-                        eval = ((x, y), move, board_eval_move(board, (x, y), move))#board_eval(board_new))
+                        _eval = ((x, y), move, board_eval_move(board, (x, y), move))#board_eval(board_new))
 
-                    if eval == None:
+                    if _eval == None:
                         continue
 
-                    if value == None or (turn % 2 == 0 and eval[2] > value[2]) or (turn % 2 == 1 and eval[2] < value[2]):
-                        value = ((x, y), move, eval[2])
+                    if value == None or (turn % 2 == 0 and _eval[2] > value[2]) or (turn % 2 == 1 and _eval[2] < value[2]):
+                        value = ((x, y), move, _eval[2])
 
     return value
 
@@ -179,7 +188,7 @@ def tile_get_moves(board, x, y, count = False):
                 if tile_r != -1 and tile_r.color != tile.color:
                     if count: moves += 1
                     else: moves.append((x + 1, y1))
-
+        
         elif tile.type == "N":
             moves = notpawn_get_moves(board, x, y, tile.color, [-1, 1, 2, 2, 1, -1, -2, -2], [-2, -2, -1, 1, 2, 2, 1, -1], 8, 1, count = count)
         elif tile.type == "B":
