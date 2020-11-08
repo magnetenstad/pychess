@@ -29,7 +29,7 @@ while True:
 
 	if len(i) == 0:
 		t = time.time()
-		eval = board_eval_recursive(board, 1, turn)
+		eval = board_eval_recursive(board, 2, turn)
 		if eval != None:
 			tile_move(board, eval[0], eval[1])
 			print("Computer played:", letters[eval[0][0]] +

@@ -68,7 +68,7 @@ def board_print(board):
 		for x in range(len(board)):
 			tile = board[x][y]
 			if tile != -1: row += icons[tile.type][tile.color] + " "
-			else: row += "   "
+			else: row += "  "
 		y -= 1
 		print(row)
 	#print(" |_________________________")
@@ -126,13 +126,13 @@ def board_eval_recursive(board, depth, turn):
 					if depth > 0:
 						_eval = board_eval_recursive(board_new, depth, turn)
 						if _eval == None:
-							_eval = ((x, y), move, board_eval_move(board, (x, y), move))
+							_eval = ((x, y), move, board_eval_move(board_new, (x, y), move))
 					else:
-						_eval = ((x, y), move, board_eval_move(board, (x, y), move))#board_eval(board_new))
+						_eval = ((x, y), move, board_eval_move(board_new, (x, y), move))#board_eval(board_new))
 
 					if _eval == None:
 						continue
-
+					
 					if value == None or (turn % 2 == 0 and _eval[2] > value[2]) or (turn % 2 == 1 and _eval[2] < value[2]):
 						value = ((x, y), move, _eval[2])
 
