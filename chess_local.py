@@ -31,7 +31,7 @@ while True:
 	if len(i) == 0:
 		t = time.time()
 		print("thinking..")
-		_eval = board_eval_recursive(board, boards, 4, turn)
+		_eval = board_eval_recursive(board, boards, 3, turn)
 		if _eval != None:
 			tile_move(board, _eval[0], _eval[1])
 			print("Computer played:", letters[_eval[0][0]] +

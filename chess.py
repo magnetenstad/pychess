@@ -132,7 +132,6 @@ def board_eval_recursive(board, boards, depth, turn):
 	turn = (turn + 1) % 2
 	value = None
 	
-
 	for x in range(8):
 		for y in range(8):
 			tile = board[x][y]

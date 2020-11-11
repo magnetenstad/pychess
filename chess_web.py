@@ -45,15 +45,15 @@ while True:
 
 	if len(i) == 0:
 		t = time.time()
-		eval = board_eval_recursive(board, 3, turn)
+		_eval = board_eval_recursive(board, [], 3, turn)
 
-		if eval != None:
+		if _eval != None:
 			b = driver.find_element_by_class_name("cg-wrap")
 
-			x0 = eval[0][0]
-			y0 = eval[0][1]
-			x1 = eval[1][0]
-			y1 = eval[1][1]
+			x0 = _eval[0][0]
+			y0 = _eval[0][1]
+			x1 = _eval[1][0]
+			y1 = _eval[1][1]
 
 			orientation = b.get_attribute("class")
 
@@ -74,9 +74,9 @@ while True:
 			action.click()
 			action.perform()
 
-			tile_move(board, eval[0], eval[1])
-			print("Computer played:", letters[eval[0][0]] + numbers[eval[0][1]], letters[eval[1][0]] + numbers[eval[1][1]])
-			print("Eval: ", eval[2])
+			tile_move(board, _eval[0], _eval[1])
+			print("Computer played:", letters[_eval[0][0]] + numbers[_eval[0][1]], letters[_eval[1][0]] + numbers[_eval[1][1]])
+			print("Eval: ", _eval[2])
 			turn += 1
 		else:
 			print("No legal moves.")
