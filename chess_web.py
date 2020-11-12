@@ -17,9 +17,9 @@ driver = driver_create()
 
 tile_size = driver.find_element_by_xpath("//piece[@class='white king']").size["width"]
 
-board = board_create()
-
-board_print(board)
+chess = Chess()
+chess.print()
+print("Current evaluation: ", chess.evaluate_board(), "\n")
 
 while True:
 	a = (0, 0)
@@ -28,32 +28,32 @@ while True:
 	
 	while True:
 		try:
-			i = input("\n" + str((turn - 1) % 2) + " to play:").split()
+			i = []#input("\n" + str((chess.turn - 1) % 2) + " to play:").split()
 			if len(i) == 0:
 				break
 			if i[0] == "-":
-				turn -= 1
+				chess.turn -= 1
 			if i[0] == "exit":
 				break
-			a = (letters.index(i[0][0]), numbers.index(i[0][1]))
+			a = (chess.letters.index(i[0][0]), chess.numbers.index(i[0][1]))
 			if len(i) == 1:
-				print(board[a[0]][a[1]].value)
-			b = (letters.index(i[1][0]), numbers.index(i[1][1]))
+				print(chess.board[a[0]][a[1]].value)
+			b = (chess.letters.index(i[1][0]), chess.numbers.index(i[1][1]))
 			break
 		except:
 			pass
-
+	
 	if len(i) == 0:
 		t = time.time()
-		_eval = board_eval_recursive(board, [], 3, turn)
-
-		if _eval != None:
+		evaluation = chess.evaluate_recursive_start(2)
+		
+		if evaluation != None:
 			b = driver.find_element_by_class_name("cg-wrap")
 
-			x0 = _eval[0][0]
-			y0 = _eval[0][1]
-			x1 = _eval[1][0]
-			y1 = _eval[1][1]
+			x0 = evaluation[0][0]
+			y0 = evaluation[0][1]
+			x1 = evaluation[1][0]
+			y1 = evaluation[1][1]
 
 			orientation = b.get_attribute("class")
 
@@ -74,10 +74,10 @@ while True:
 			action.click()
 			action.perform()
 
-			tile_move(board, _eval[0], _eval[1])
-			print("Computer played:", letters[_eval[0][0]] + numbers[_eval[0][1]], letters[_eval[1][0]] + numbers[_eval[1][1]])
-			print("Eval: ", _eval[2])
-			turn += 1
+			chess.move(evaluation[0], evaluation[1])
+			print("Computer played:", chess.letters[evaluation[0][0]] + chess.numbers[evaluation[0][1]], chess.letters[evaluation[1][0]] + chess.numbers[evaluation[1][1]])
+			print("Eval: ", evaluation[2])
+			chess.turn += 1
 		else:
 			print("No legal moves.")
 
@@ -85,12 +85,13 @@ while True:
 	else:
 		if i[0] == "exit":
 			break
-		moves = tile_get_moves(board, a[0], a[1])
+		moves = chess.get_moves(a[0], a[1])
 		if not b in moves:
 			print("Not a legal move.")
 
-		tile_move(board, a, b)
-		turn += 1
+		chess.move(a, b)
+		chess.turn += 1
 
-	print("Current evaluation: ", board_eval(board), "\n")
-	board_print(board)
+	print("Current evaluation: ", chess.evaluate_board(), "\n")
+	chess.print()
+
